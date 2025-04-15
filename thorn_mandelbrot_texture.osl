@@ -1,0 +1,29 @@
+
+shader node_fractal_thorn_mandelbrot(
+    point Pos = P,
+    float c1_in = 0.0,
+    float c2_in = 0.0,
+    int iterations = 256,
+    output float fac = 0.0)
+{
+    float c1 = c1_in;
+    float c2 = c2_in;
+    
+    int iter_num = 0;
+    
+    for(int i=0; i<iterations; i++)
+    {
+        float prevc1 = c1;
+        float prevc2 = c2;
+        iter_num = i;
+        
+        c1 = prevc1 / cos(prevc2) + Pos[0];
+        c2 = prevc2 / sin(prevc1) + Pos[1];
+        
+        if(c1*c1 + c2*c2 > 10000)
+            break;
+    }
+    
+    fac = (float)iter_num/(float)iterations;
+}
+
