@@ -2,6 +2,7 @@
 
 shader node_fractal_mandelbrot_set(
     point Pos = P,
+    float Power = 2.0,
     int iterations = 256,
     output float fac = 0.0)
 {
@@ -14,7 +15,7 @@ shader node_fractal_mandelbrot_set(
     {
         iter_num = i;
         
-        z = z*z + c;
+        z = pow(z, Power) + c;
         
         if(z.real*z.real + z.imag*z.imag > 4)
             break;
