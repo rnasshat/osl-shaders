@@ -21,8 +21,12 @@ float cabs (complex c) {
     return sqrt(c.real*c.real + c.imag*c.imag);
 }
 
+float carg (complex c) {
+    return atan2(c.imag, c.real);
+}
+
 complex pow (complex c, float e) {
-    float phi = atan2(c.imag, c.real);
+    float phi = carg(c);
     float r = cabs(c);
     
     return complex(cos(e*phi) * pow(r, e), sin(e*phi) * pow(r, e));
