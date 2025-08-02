@@ -1,0 +1,28 @@
+#include "complex.h"
+
+shader node_fractal_burning_ship(
+    point Pos = P,
+    float cr = 0.0,
+    float ci = 0.0,
+    float Power = 2.0,
+    int iterations = 256,
+    output float fac = 0.0)
+{
+    complex z = {Pos[0], Pos[1]};
+    complex c = {cr, ci};
+    
+    int iter_num = 0;
+    
+    for(int i=0; i<iterations; i++)
+    {
+        iter_num = i;
+        
+        z = pow(complex(abs(z.real), abs(z.imag)), Power) + c;
+        
+        if(z.real*z.real + z.imag*z.imag > 4)
+            break;
+    }
+    
+    fac = (float)iter_num/(float)iterations;
+}
+
