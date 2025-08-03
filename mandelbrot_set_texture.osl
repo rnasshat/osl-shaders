@@ -5,8 +5,9 @@ shader node_fractal_mandelbrot_set(
     float Power = 2.0,
     int iterations = 256,
     output float fac = 0.0,
-    output float modulus = 0.0,
-    output float argument = 0.0)
+    output float real = 0.0,
+    output float imag = 0.0,
+    output int inside = 1)
 {
     complex z = {0, 0};
     complex c = {Pos[0], Pos[1]};
@@ -20,11 +21,14 @@ shader node_fractal_mandelbrot_set(
         z = pow(z, Power) + c;
         
         if(z.real*z.real + z.imag*z.imag > 4)
+        {
+            inside = 0;
             break;
+        }
     }
     
     fac = (float)iter_num/(float)iterations;
-    modulus = cabs(z);
-    argument = carg(z);
+    real = z.real;
+    imag = z.imag;
 }
 
