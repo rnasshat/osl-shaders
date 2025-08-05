@@ -1,29 +1,32 @@
+#include "complex.h"
 
 shader node_fractal_thorn_julia(
     point Pos = P,
-    float c1 = 0.0,
-    float c2 = 0.0,
+    float cr = 0.0,
+    float ci = 0.0,
     int iterations = 256,
-    output float fac = 0.0)
+    output float fac = 0.0,
+    output float real = 0.0,
+    output float imag = 0.0)
 {
-    float x = Pos[0];
-    float y = Pos[1];
+    complex z = {Pos[0], Pos[1]};
+    complex c = {cr, ci};
     
     int iter_num = 0;
     
     for(int i=0; i<iterations; i++)
     {
-        float prevx = x;
-        float prevy = y;
         iter_num = i;
         
-        x = prevx / cos(prevy) + c1;
-        y = prevy / sin(prevx) + c2;
+        z = complex(z.real/cos(z.imag), z.imag/sin(z.real)) + c;
         
-        if(x*x + y*y > 10000)
+        if(z.real*z.real + z.imag*z.imag > 10000)
             break;
     }
     
     fac = (float)iter_num/(float)iterations;
+
+    real = z.real;
+    imag = z.imag;
 }
 
