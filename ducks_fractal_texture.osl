@@ -1,0 +1,33 @@
+#include "complex.h"
+
+/*
+    algorithm source:
+    https://algorithmic-worlds.net/blog/blog.php?Post=20110227
+*/
+
+shader node_fractal_ducks(
+    point Pos = P,
+    float cr = 0.0,
+    float ci = 0.0,
+    int iterations = 100,
+    output float fac = 0.0,
+    output float real = 0.0,
+    output float imag = 0.0)
+{
+    complex z = {Pos[0], Pos[1]};
+    complex c = {cr, ci};
+    
+    float mag = 0;
+    
+    for(int i=0; i<iterations; i++)
+    {
+        z = log(complex(z.real, abs(z.imag)) + c);
+        mag += cabs(z);
+    }
+    
+    fac = mag/(float)iterations;
+
+    real = z.real;
+    imag = z.imag;
+}
+

@@ -31,3 +31,7 @@ complex pow (complex c, float e) {
     
     return complex(cos(e*phi) * pow(r, e), sin(e*phi) * pow(r, e));
 }
+
+complex log (complex c) {
+    return complex(log(cabs(c)), carg(c));
+}
