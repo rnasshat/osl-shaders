@@ -2,17 +2,28 @@
 
 shader node_fractal_burning_ship(
     point Pos = P,
+    float seed_real = 0.0,
+    float seed_imag = 0.0,
     float Power = 2.0,
+    float bailout = 50.0,
     int iterations = 256,
     int smooth = 1 [[ string widget = "boolean" ]],
+    int julia = 0 [[ string widget = "boolean" ]],
     output float fac = 0.0,
     output float real = 0.0,
     output float imag = 0.0,
     output int inside = 1)
 {
-    complex z = {0, 0};
-    complex c = {Pos[0], Pos[1]};
-    float bailout = pow(2, 1/(Power-1));
+    complex z;
+    complex c;
+    if(julia)
+    {
+        z = complex(Pos[0], Pos[1]);
+        c = complex(seed_real, seed_imag);
+    } else {
+        z = complex(0, 0);
+        c = complex(Pos[0], Pos[1]);
+    }
     
     int iter_num = 0;
     
