@@ -9,10 +9,13 @@ shader node_fractal_burning_ship(
     int iterations = 256,
     int smooth = 1 [[ string widget = "boolean" ]],
     int julia = 0 [[ string widget = "boolean" ]],
+    int trap_type = 0 [[ string widget = "boolean" ]],
+    point orbit_trap = point(0, 0, 0),
     output float fac = 0.0,
     output float real = 0.0,
     output float imag = 0.0,
-    output int inside = 1)
+    output int inside = 1,
+    output vector trap_dist = vector(0x0FFFFFFF, 0x0FFFFFFF, 0))
 {
     complex z;
     complex c;
@@ -31,7 +34,18 @@ shader node_fractal_burning_ship(
     {
         iter_num = i;
         
+        //main iterated function
         z = pow(complex(abs(z.real), abs(z.imag)), Power) + c;
+        
+        //orbit traps
+        if(trap_type == 0) //0 = axis-aligned lines
+        {
+            trap_dist.x = min(trap_dist.x, abs(orbit_trap.x - z.real));
+            trap_dist.y = min(trap_dist.y, abs(orbit_trap.y - z.imag));
+        } else { //1 = point with angle
+            trap_dist.x = min(trap_dist.x, distance({z.real, z.imag, 0}, {orbit_trap.x, orbit_trap.y, 0}));
+            trap_dist.y = min(trap_dist.y, atan2(z.imag - orbit_trap.y, z.real - orbit_trap.x));
+        }
         
         if(z.real*z.real + z.imag*z.imag > bailout*bailout)
         {
