@@ -9,12 +9,20 @@ complex __operator__add__ (complex a, complex b) {
     return complex(a.real + b.real, a.imag + b.imag);
 }
 
+complex __operator__add__ (float a, complex b) {
+    return complex(a, 0) + b;
+}
+
 complex __operator__sub__ (complex a, complex b) {
     return complex(a.real - b.real, a.imag - b.imag);
 }
 
 complex __operator__mul__ (complex a, complex b) {
     return complex(a.real*b.real - a.imag*b.imag, a.real*b.imag + a.imag*b.real);
+}
+
+complex __operator__mul__ (float a, complex b) {
+    return complex(a, 0) * b;
 }
 
 float cabs (complex c) {
@@ -34,4 +42,14 @@ complex pow (complex c, float e) {
 
 complex log (complex c) {
     return complex(log(cabs(c)), carg(c));
+}
+
+complex sin (complex c)
+{
+    return complex(sin(c.real) * cosh(c.imag), cos(c.real) * sinh(c.imag));
+}
+
+complex cos (complex c)
+{
+    return complex(cos(c.real) * cosh(c.imag), 0.0 - sin(c.real) * sinh(c.imag));
 }
