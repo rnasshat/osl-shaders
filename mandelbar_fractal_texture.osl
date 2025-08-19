@@ -59,9 +59,9 @@ shader node_fractal_mandelbar(
         for help with math for smooth coloring
     */
     if(smooth == 0)
-        fac = (float)iter_num/(float)iterations;
+        fac = (float)iter_num/((float)iterations - 1.0);
     else
-        fac = ((float)iter_num - log(log(cabs(z), bailout), Power))/(float)iterations;
+        fac = ((float)iter_num - log(log(cabs(z), bailout), Power))/((float)iterations - 1.0);
     
     real = z.real;
     imag = z.imag;
