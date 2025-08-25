@@ -1,0 +1,4 @@
+#include "complex.h"
+#include "fractal.h"
+
+ESCAPE_TIME_FRACTAL(mandelbrot_absim, z = pow(complex(abs(z.real), z.imag), Power) + c)
