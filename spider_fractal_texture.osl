@@ -1,0 +1,4 @@
+#include "complex.h"
+#include "fractal.h"
+
+ESCAPE_TIME_FRACTAL(spider, z = pow(z, Power) + c; c = 0.5*c + z)
