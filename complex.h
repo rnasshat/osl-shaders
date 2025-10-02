@@ -5,6 +5,11 @@ struct complex {
     float imag;
 };
 
+complex recip (complex c) {
+    float abs_sq = c.real*c.real + c.imag*c.imag;
+    return complex(c.real/abs_sq, -c.imag/abs_sq);
+}
+
 complex __operator__add__ (complex a, complex b) {
     return complex(a.real + b.real, a.imag + b.imag);
 }
@@ -17,6 +22,10 @@ complex __operator__sub__ (complex a, complex b) {
     return complex(a.real - b.real, a.imag - b.imag);
 }
 
+complex __operator__sub__ (float a, complex b) {
+    return complex(a - b.real, -b.imag);
+}
+
 complex __operator__mul__ (complex a, complex b) {
     return complex(a.real*b.real - a.imag*b.imag, a.real*b.imag + a.imag*b.real);
 }
@@ -27,6 +36,18 @@ complex __operator__mul__ (float a, complex b) {
 
 complex __operator__mul__ (complex a, float b) {
     return a * complex(b, 0);
+}
+
+complex __operator__div__ (complex a, complex b) {
+    return a * recip(b);
+}
+
+complex __operator__div__ (float a, complex b) {
+    return complex(a, 0) * recip(b);
+}
+
+complex __operator__div__ (complex a, float b) {
+    return a * recip(complex(b, 0));
 }
 
 float cabs (complex c) {
