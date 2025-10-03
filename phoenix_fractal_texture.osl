@@ -1,0 +1,52 @@
+#include "complex.h"
+
+shader node_fractal_phoenix( 
+    point Pos = P, 
+    complex seed = {0, 0},
+    float Power = 2.0, 
+    float k = 1,
+    float bailout = 50.0, 
+    int iterations = 256, 
+    int smooth = 1 [[ string widget = "boolean" ]], 
+    int julia = 0 [[ string widget = "boolean" ]], 
+    output float fac = 0.0, 
+    output complex z = {0, 0}, 
+    output int inside = 1)
+{ 
+    complex c; 
+    if(julia) 
+    { 
+        z = complex(Pos[0], Pos[1]); 
+        c = complex(seed.real, seed.imag); 
+    } else { 
+        z = complex(0, 0); 
+        c = complex(Pos[0], Pos[1]); 
+    } 
+    complex oldz = z; 
+     
+    int iter_num = 0; 
+    for(int i=0; i<iterations; i++) 
+    { 
+        iter_num = i; 
+         
+        /* main iterated function */ 
+        complex tempz = z;
+        z = pow(z, Power) + k*oldz + c;
+        oldz = tempz;
+        
+        if(z.real*z.real + z.imag*z.imag > bailout*bailout) 
+        { 
+            inside = 0; 
+            break; 
+        } 
+    } 
+     
+    /*
+        Thanks to https://iquilezles.org/articles/msetsmooth/ 
+        for help with math for smooth coloring
+    */ 
+    if(smooth == 0) 
+        fac = (float)iter_num/((float)iterations - 1.0); 
+    else 
+        fac = ((float)iter_num - log(log(cabs(z), bailout), Power))/((float)iterations - 1.0); 
+}
