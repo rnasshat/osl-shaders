@@ -3,8 +3,8 @@
 shader node_fractal_phoenix( 
     point Pos = P, 
     complex seed = {0, 0},
-    float Power = 2.0, 
-    float k = 1,
+    complex Power = {2, 0}, 
+    complex k = {-0.5, 0},
     float bailout = 50.0, 
     int iterations = 256, 
     int smooth = 1 [[ string widget = "boolean" ]], 
@@ -47,6 +47,8 @@ shader node_fractal_phoenix(
     */ 
     if(smooth == 0) 
         fac = (float)iter_num/((float)iterations - 1.0); 
-    else 
-        fac = ((float)iter_num - log(log(cabs(z), bailout), Power))/((float)iterations - 1.0); 
+    else {
+        complex tmp = ((float)iter_num - log(log(cabs(z), bailout))/log(Power))/((float)iterations - 1.0);
+        fac = tmp.real; 
+    }
 }
