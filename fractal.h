@@ -1,8 +1,7 @@
 #define ESCAPE_TIME_FRACTAL(n, f) shader node_fractal_##n( \
     point Pos = P, \
-    float seed_real = 0.0, \
-    float seed_imag = 0.0, \
-    float Power = 2.0, \
+    complex seed = {0, 0}, \
+    complex Power = {2, 0}, \
     float bailout = 50.0, \
     int iterations = 256, \
     int smooth = 1 [[ string widget = "boolean" ]], \
@@ -10,17 +9,15 @@
     int trap_type = 0 [[ string widget = "boolean" ]], \
     point orbit_trap = point(0, 0, 0), \
     output float fac = 0.0, \
-    output float real = 0.0, \
-    output float imag = 0.0, \
+    output complex z = {0, 0}, \
     output int inside = 1, \
     output vector trap_dist = vector(0x0FFFFFFF, 0x0FFFFFFF, 0)) \
 { \
-    complex z; \
     complex c; \
     if(julia) \
     { \
         z = complex(Pos[0], Pos[1]); \
-        c = complex(seed_real, seed_imag); \
+        c = complex(seed.real, seed.imag); \
     } else { \
         z = complex(0, 0); \
         c = complex(Pos[0], Pos[1]); \
@@ -58,9 +55,8 @@
     */ \
     if(smooth == 0) \
         fac = (float)iter_num/((float)iterations - 1.0); \
-    else \
-        fac = ((float)iter_num - log(log(cabs(z), bailout), Power))/((float)iterations - 1.0); \
-     \
-    real = z.real; \
-    imag = z.imag; \
+    else { \
+        complex temp = ((float)iter_num - (log(log(cabs(z), bailout)) / log(Power)))/((float)iterations - 1.0); \
+        fac = temp.real; \
+    } \
 }
