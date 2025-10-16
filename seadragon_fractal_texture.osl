@@ -1,0 +1,64 @@
+#include "complex.h"
+
+/*
+    I think I came up with this function myself,
+    inspired by the "ducks" and "phoenix" fractals.
+    I don't know if this formula has been used before,
+    but I'm just assuming not because it's kind of specific.
+    
+    I chose the name "seadragon" because of the appearance of
+    the "Mandelbrot" variant of the fractal, using the default
+    values provided here. It contains a wide variety of textures.
+*/
+
+shader node_fractal_seadragon(
+    point Pos = P,
+    complex seed = {0, 0}, 
+    complex a = {1, 0},
+    complex b = {-0.1, 0},
+    complex Power = {-1, 0},
+    int iterations = 100,
+    int julia = 0 [[ string widget = "boolean" ]],
+    int trap_type = 0 [[ string widget = "boolean" ]],
+    point orbit_trap = point(0, 0, 0),
+    output float fac = 0.0,
+    output complex z = {0, 0},
+    output vector trap_dist = vector(0x0FFFFFFF, 0x0FFFFFFF, 0))
+{
+    complex c;
+    if(julia)
+    {
+        z = complex(Pos[0], Pos[1]);
+        c = complex(seed.real, seed.imag);
+    } else {
+        z = complex(0, 0);
+        c = complex(Pos[0], Pos[1]);
+    }
+    
+    float mag = 0;
+    complex oldz = z;
+    
+    for(int i=0; i<iterations; i++)
+    {
+        //main function
+        complex ztemp = z;
+        z.imag = abs(z.imag);
+        z = log(z) + a*pow(z + c, Power) + b*oldz;
+        oldz = ztemp;
+        
+        mag += cabs(z);
+        
+        //orbit traps
+        if(trap_type == 0) //0 = axis-aligned lines
+        {
+            trap_dist.x = min(trap_dist.x, abs(orbit_trap.x - z.real));
+            trap_dist.y = min(trap_dist.y, abs(orbit_trap.y - z.imag));
+        } else { //1 = point with angle
+            trap_dist.x = min(trap_dist.x, distance({z.real, z.imag, 0}, {orbit_trap.x, orbit_trap.y, 0}));
+            trap_dist.y = min(trap_dist.y, atan2(z.imag - orbit_trap.y, z.real - orbit_trap.x));
+        }
+    }
+    
+    fac = mag/(float)iterations;
+}
+
