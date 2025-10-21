@@ -17,6 +17,7 @@ shader node_fractal_seadragon(
     complex a = {1, 0},
     complex b = {-0.1, 0},
     complex Power = {-1, 0},
+    complex LogBase = {M_E, 0},
     int iterations = 100,
     int julia = 0 [[ string widget = "boolean" ]],
     int trap_type = 0 [[ string widget = "boolean" ]],
@@ -43,7 +44,10 @@ shader node_fractal_seadragon(
         //main function
         complex ztemp = z;
         z.imag = abs(z.imag);
-        z = log(z) + a*pow(z + c, Power) + b*oldz;
+        if(LogBase.real == M_E && LogBase.imag == 0)
+            z = log(z) + a*pow(z + c, Power) + b*oldz;
+        else
+            z = log(z)/log(LogBase) + a*pow(z + c, Power) + b*oldz;
         oldz = ztemp;
         
         mag += cabs(z);
